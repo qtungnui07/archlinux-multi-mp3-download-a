@@ -1,6 +1,7 @@
 import importlib
 import sys
 import os
+import subprocess
 
 def check_and_activate_venv():
     """
@@ -36,18 +37,19 @@ def check_required_modules(required_modules):
         print("pip install " + " ".join(missing_modules))
         sys.exit(1)
 
-def check_ffmpeg():
+def install_ffmpeg():
     """
-    Kiểm tra xem FFmpeg đã được cài đặt chưa.
-    Nếu chưa, hướng dẫn người dùng cài đặt.
+    Tự động cài đặt FFmpeg nếu không có trên hệ thống.
     """
     ffmpeg_path = "/usr/bin/ffmpeg"
     if not os.path.exists(ffmpeg_path):
-        print("FFmpeg không được tìm thấy trên hệ thống.\n")
-        print("Hãy cài đặt FFmpeg theo cách thủ công:")
-        print("- Trên Arch Linux: sudo pacman -S ffmpeg")
-        print("- Trên các hệ điều hành khác: tham khảo tài liệu cài đặt FFmpeg.")
-        sys.exit(1)
+        print("FFmpeg không được tìm thấy. Đang cài đặt qua pacman...")
+        try:
+            subprocess.run(["sudo", "pacman", "-Sy", "--noconfirm", "ffmpeg"], check=True)
+            print("FFmpeg đã được cài đặt thành công.")
+        except subprocess.CalledProcessError as e:
+            print(f"Không thể cài đặt FFmpeg: {e}")
+            sys.exit(1)
     else:
         print("FFmpeg đã được cài đặt.")
 
@@ -62,9 +64,9 @@ def main():
     check_required_modules(required_modules)
 
     try:
-        # Kiểm tra FFmpeg
-        print("Kiểm tra FFmpeg...")
-        check_ffmpeg()
+        # Kiểm tra và cài đặt FFmpeg nếu cần
+        print("Kiểm tra và cài đặt FFmpeg...")
+        install_ffmpeg()
 
         # Import các module nội bộ sau khi đảm bảo module bên ngoài đã đầy đủ
         print("Kiểm tra và import modules.youtube...")
