@@ -2,14 +2,17 @@ import importlib
 import sys
 import os
 
-def check_root_permission():
+def check_and_activate_venv():
     """
-    Kiểm tra nếu chương trình đang chạy với quyền root.
-    Nếu không, in cảnh báo và thoát chương trình.
+    Kiểm tra nếu đang trong môi trường ảo.
+    Nếu không, yêu cầu người dùng kích hoạt môi trường ảo.
     """
-    if os.geteuid() != 0:
-        print("Chương trình yêu cầu quyền root để chạy. Hãy sử dụng lệnh:")
-        print("sudo python main.py")
+    if os.getenv("VIRTUAL_ENV") is None:
+        print("Chương trình cần được chạy trong môi trường ảo (virtual environment).\n")
+        print("Hãy tạo và kích hoạt môi trường ảo với các lệnh sau:")
+        print("python -m venv myenv")
+        print("source myenv/bin/activate")
+        print("Sau đó chạy lại chương trình.")
         sys.exit(1)
 
 def check_required_modules(required_modules):
@@ -29,17 +32,13 @@ def check_required_modules(required_modules):
         for module in missing_modules:
             print(f"- {module}")
 
-        print("\nHãy cài đặt chúng bằng lệnh:")
+        print("\nHãy cài đặt chúng trong môi trường ảo bằng lệnh:")
         print("pip install " + " ".join(missing_modules))
-        print("\nHoặc trên Arch Linux, sử dụng pacman hoặc pipx nếu có:")
-        for module in missing_modules:
-            print(f"sudo pacman -S python-{module}")
-
         sys.exit(1)
 
 def main():
-    # Kiểm tra quyền root
-    check_root_permission()
+    # Kiểm tra và kích hoạt môi trường ảo nếu cần
+    check_and_activate_venv()
 
     # Danh sách các module cần kiểm tra
     required_modules = ["requests", "yt_dlp", "pyperclip", "keyboard"]
