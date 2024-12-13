@@ -12,10 +12,14 @@ def create_and_activate_venv(venv_name="myenv"):
         subprocess.check_call([sys.executable, "-m", "venv", venv_name])
 
     # Kích hoạt môi trường ảo
+    activate_script = None
     if os.name == "nt":
         activate_script = os.path.join(venv_name, "Scripts", "activate_this.py")
     else:
         activate_script = os.path.join(venv_name, "bin", "activate_this.py")
+
+    if not os.path.exists(activate_script):
+        raise FileNotFoundError(f"Không tìm thấy file kích hoạt: {activate_script}. Kiểm tra lại việc tạo môi trường ảo.")
 
     with open(activate_script) as file_:
         exec(file_.read(), dict(__file__=activate_script))
