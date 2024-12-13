@@ -2,6 +2,16 @@ import importlib
 import sys
 import os
 
+def check_root_permission():
+    """
+    Kiểm tra nếu chương trình đang chạy với quyền root.
+    Nếu không, in cảnh báo và thoát chương trình.
+    """
+    if os.geteuid() != 0:
+        print("Chương trình yêu cầu quyền root để chạy. Hãy sử dụng lệnh:")
+        print("sudo python main.py")
+        sys.exit(1)
+
 def check_required_modules(required_modules):
     """
     Kiểm tra các module cần thiết đã được cài đặt chưa.
@@ -28,6 +38,9 @@ def check_required_modules(required_modules):
         sys.exit(1)
 
 def main():
+    # Kiểm tra quyền root
+    check_root_permission()
+
     # Danh sách các module cần kiểm tra
     required_modules = ["requests", "yt_dlp", "pyperclip", "keyboard"]
 
