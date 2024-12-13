@@ -35,7 +35,17 @@ def monitor_clipboard_and_store_urls():
 
     while True:
         try:
-            current_clipboard = pyperclip.paste()
+            try:
+                current_clipboard = pyperclip.paste()
+            except pyperclip.PyperclipException as e:
+                print("Error: Pyperclip could not find a copy/paste mechanism for your system.")
+                print("For more information, please visit https://pyperclip.readthedocs.io/en/latest/index.html#not-implemented-error")
+                print("On Linux, you can run `sudo apt-get install xclip` or `sudo apt-get install xselect`.")
+                print("On MacOS, ensure the `pbcopy` utility is available.")
+                print("On Windows, it should work by default. If not, troubleshoot your Python installation.")
+                time.sleep(5)
+                continue
+
             if current_clipboard != previous_clipboard:
                 previous_clipboard = current_clipboard
                 if is_valid_youtube_url(current_clipboard):
