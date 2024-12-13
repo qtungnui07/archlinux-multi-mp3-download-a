@@ -46,13 +46,23 @@ def main():
     # Kiểm tra và thông báo nếu thiếu module
     check_required_modules(required_modules)
 
-    # Import các module nội bộ sau khi đảm bảo module bên ngoài đã đầy đủ
-    from modules.ffmpeg import check_and_install_ffmpeg
-    from modules.youtube import monitor_clipboard_and_store_urls
+    try:
+        # Import các module nội bộ sau khi đảm bảo module bên ngoài đã đầy đủ
+        print("Kiểm tra và import modules.ffmpeg...")
+        from modules.ffmpeg import check_and_install_ffmpeg
 
-    # Thực hiện logic chính
-    check_and_install_ffmpeg()
-    monitor_clipboard_and_store_urls()
+        print("Kiểm tra và import modules.youtube...")
+        from modules.youtube import monitor_clipboard_and_store_urls
+
+        # Thực hiện logic chính
+        print("Chạy check_and_install_ffmpeg...")
+        check_and_install_ffmpeg()
+
+        print("Chạy monitor_clipboard_and_store_urls...")
+        monitor_clipboard_and_store_urls()
+
+    except Exception as e:
+        print(f"Lỗi xảy ra: {e}")
 
 if __name__ == "__main__":
     main()
