@@ -36,6 +36,21 @@ def check_required_modules(required_modules):
         print("pip install " + " ".join(missing_modules))
         sys.exit(1)
 
+def check_ffmpeg():
+    """
+    Kiểm tra xem FFmpeg đã được cài đặt chưa.
+    Nếu chưa, hướng dẫn người dùng cài đặt.
+    """
+    ffmpeg_path = "/usr/bin/ffmpeg"
+    if not os.path.exists(ffmpeg_path):
+        print("FFmpeg không được tìm thấy trên hệ thống.\n")
+        print("Hãy cài đặt FFmpeg theo cách thủ công:")
+        print("- Trên Arch Linux: sudo pacman -S ffmpeg")
+        print("- Trên các hệ điều hành khác: tham khảo tài liệu cài đặt FFmpeg.")
+        sys.exit(1)
+    else:
+        print("FFmpeg đã được cài đặt.")
+
 def main():
     # Kiểm tra và kích hoạt môi trường ảo nếu cần
     check_and_activate_venv()
@@ -47,17 +62,15 @@ def main():
     check_required_modules(required_modules)
 
     try:
-        # Import các module nội bộ sau khi đảm bảo module bên ngoài đã đầy đủ
-        print("Kiểm tra và import modules.ffmpeg...")
-        from modules.ffmpeg import check_and_install_ffmpeg
+        # Kiểm tra FFmpeg
+        print("Kiểm tra FFmpeg...")
+        check_ffmpeg()
 
+        # Import các module nội bộ sau khi đảm bảo module bên ngoài đã đầy đủ
         print("Kiểm tra và import modules.youtube...")
         from modules.youtube import monitor_clipboard_and_store_urls
 
         # Thực hiện logic chính
-        print("Chạy check_and_install_ffmpeg...")
-        check_and_install_ffmpeg()
-
         print("Chạy monitor_clipboard_and_store_urls...")
         monitor_clipboard_and_store_urls()
 
